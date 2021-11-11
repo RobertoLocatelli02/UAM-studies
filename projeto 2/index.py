@@ -20,6 +20,7 @@ Sua opção: """))
                 return op
             print("Insira um valor entre 1 e 7.")
         except ValueError:
+            printLinhas()
             print("Insira um valor numérico inteiro!")
 
 
@@ -86,17 +87,18 @@ def deleteUsuarioByEmail(usuarios):
 
 def putUsuarioByEmail(usuarios):
     printLinhas()
-    email = input("Informe o email do usuário a ser atualizado: ")
+    email = input("Informe o email do usuário a ser atualizado: ").strip()
     if not any(i['email'] == email for i in usuarios):
         print(f'{email} não é cadastrado!')
     else:
         for i in usuarios:
             if i['email'] == email:
                 i['nome'] = input("Digite o nome de usuário: ").strip().capitalize()
+        print("Nome atualizado com sucesso!")
     return usuarios
 
 
-def condicoesOp():
+def verificaCondicoesOp():
     usuarios = []
     while True:
         op = menu()
@@ -118,9 +120,11 @@ def condicoesOp():
             printLinhas()
             break
 
+
 def main():
-    condicoesOp()
+    verificaCondicoesOp()
 
 
 if __name__ == "__main__":
     main()
+
