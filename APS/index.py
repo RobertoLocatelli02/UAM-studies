@@ -3,6 +3,8 @@ from random import randint
 import time
 import sys
 import numpy as np
+import pandas
+import matplotlib.pyplot as plt
 
 sys.setrecursionlimit(10 ** 9)
 
@@ -63,6 +65,7 @@ def criarColecao(colecao, tamanho):
 
 
 def main():
+    #TAMANHOS = [ 1, 50, 500, 1000, 5000, 10000, 15000 ]
     TAMANHO = 15000
     colecao = []
 
@@ -74,13 +77,42 @@ def main():
     tempoInicial = time.time() 
     quickSortRecursive(colecaoRecursiva, 0, TAMANHO - 1)
     tempoFinal = time.time()
-
+    tempoSolucaoRecursiva = tempoFinal - tempoInicial
     print("Tempo Solução Recursiva: {} s".format(tempoFinal - tempoInicial))
 
     tempoInicial = time.time() 
     quickSortIterative(colecaoIterativa, 0, TAMANHO - 1) 
     tempoFinal = time.time()
+    tempoSolucaoIterativa = tempoFinal - tempoInicial
     print("Tempo Solução Iterativa: {} s".format(tempoFinal - tempoInicial))
+
+    dados = {
+        "TAMANHO": [TAMANHO],
+        "TEMPO_SOLUCAO_RECURSIVA": tempoSolucaoRecursiva,
+        "TEMPO_SOLUCAO_ITERATIVA": tempoSolucaoIterativa
+    }
+
+    try:
+        planilhaAntiga = pandas.read_excel("dados.xlsx")
+        planilhaNova = pandas.DataFrame.from_dict(dados)
+        planilhaNova = pandas.concat([planilhaAntiga, planilhaNova])
+        planilhaNova.to_excel("dados.xlsx", index = False)
+    except:
+        planilhaNova = pandas.DataFrame.from_dict(dados)
+        planilhaNova.to_excel("dados.xlsx", index = False)
+    finally:
+        planilha = pandas.read_excel("dados.xlsx")
+        planilhaSorted = planilha.sort_values(["TAMANHO"])
+
+        plt.plot(planilhaSorted["TAMANHO"], planilhaSorted["TEMPO_SOLUCAO_RECURSIVA"],  color = "purple", label = "Tempo Recursiva")
+        plt.plot(planilhaSorted["TAMANHO"], planilhaSorted["TEMPO_SOLUCAO_ITERATIVA"],  color = "yellow", label = "Tempo Iterativa")
+        plt.title("Tamanho da coleção x Tempo de solução")
+        plt.xlabel("Tamanho")
+        plt.ylabel("Tempo")
+        plt.legend()
+        plt.legend()
+        plt.savefig("terceiraTentativa.png")
+        plt.show()
 
 
 if __name__ == "__main__":
